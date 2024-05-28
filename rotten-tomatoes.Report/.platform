@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "rotten-tomatoes"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "82f85b94-11af-4cb3-ab0b-66f95564396f"
+  }
+}

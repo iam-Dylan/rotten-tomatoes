@@ -1,0 +1,1150 @@
+{
+  "compatibilityLevel": 1550,
+  "model": {
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"rotten_tomatoes_movies\",\"Errors in rotten_tomatoes_movies\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "1"
+      },
+      {
+        "name": "PBIDesktopVersion",
+        "value": "2.129.905.0 (24.05)"
+      },
+      {
+        "name": "PBI_ProTooling",
+        "value": "[\"DevMode\"]"
+      }
+    ],
+    "culture": "en-US",
+    "cultures": [
+      {
+        "name": "en-US",
+        "linguisticMetadata": {
+          "content": {
+            "Language": "en-US",
+            "Version": "1.0.0"
+          },
+          "contentType": "json"
+        }
+      }
+    ],
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "expressions": [
+      {
+        "name": "Errors in rotten_tomatoes_movies",
+        "annotations": [
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Navigation"
+          },
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "expression": [
+          "let",
+          "Source = rotten_tomatoes_movies,",
+          "  #\"Detected Type Mismatches\" = let",
+          "    tableWithOnlyPrimitiveTypes = Table.SelectColumns(Source, Table.ColumnsOfType(Source, {type nullable number, type nullable text, type nullable logical, type nullable date, type nullable datetime, type nullable datetimezone, type nullable time, type nullable duration})),",
+          "    recordTypeFields = Type.RecordFields(Type.TableRow(Value.Type(tableWithOnlyPrimitiveTypes))),",
+          "    fieldNames = Record.FieldNames(recordTypeFields),",
+          "    fieldTypes = List.Transform(Record.ToList(recordTypeFields), each [Type]),",
+          "    pairs = List.Transform(List.Positions(fieldNames), (i) => {fieldNames{i}, (v) => if v = null or Value.Is(v, fieldTypes{i}) then v else error [Message = \"The type of the value does not match the type of the column.\", Detail = v], fieldTypes{i}})",
+          "in",
+          "    Table.TransformColumns(Source, pairs),",
+          "  #\"Added Index\" = Table.AddIndexColumn(#\"Detected Type Mismatches\", \"Row Number\" ,1),",
+          "  #\"Kept Errors\" = Table.SelectRowsWithErrors(#\"Added Index\", {\"title\", \"audienceScore\", \"tomatoMeter\", \"rating\", \"releaseDateTheaters\", \"releaseDateStreaming\", \"runtimeMinutes\", \"genre\", \"subGenre\", \"originalLanguage\", \"director\", \"writer\", \"boxOffice\", \"boxOffice-number\"}),",
+          "  #\"Reordered Columns\" = Table.ReorderColumns(#\"Kept Errors\", {\"Row Number\", \"title\", \"audienceScore\", \"tomatoMeter\", \"rating\", \"releaseDateTheaters\", \"releaseDateStreaming\", \"runtimeMinutes\", \"genre\", \"subGenre\", \"originalLanguage\", \"director\", \"writer\", \"boxOffice\", \"boxOffice-number\"}),",
+          "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Reordered Columns\",{{\"boxOffice-number\", type number}}),",
+          "    #\"Removed Errors\" = Table.RemoveRowsWithErrors(#\"Changed Type\", {\"boxOffice-number\"})",
+          "in",
+          "    #\"Removed Errors\""
+        ],
+        "kind": "m",
+        "lineageTag": "cbcf6008-80f5-4d28-91a0-14a2f5d20a7b",
+        "queryGroup": "Query Errors - 3/31/2024 10:15:32 PM"
+      }
+    ],
+    "queryGroups": [
+      {
+        "annotations": [
+          {
+            "name": "PBI_QueryGroupOrder",
+            "value": "0"
+          }
+        ],
+        "description": "Errors in queries that were loaded on 3/31/2024 10:15:32 PM.",
+        "folder": "Query Errors - 3/31/2024 10:15:32 PM"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "20eaf85c-3987-4b25-aa0e-c48e98091f2e",
+        "fromColumn": "releaseDateTheaters",
+        "fromTable": "rotten_tomatoes_movies",
+        "joinOnDateBehavior": "datePartOnly",
+        "toColumn": "Date",
+        "toTable": "LocalDateTable_87030d2e-2fa8-481f-9364-cf25f3ea712c"
+      },
+      {
+        "name": "26ca0af6-ac95-4493-aebf-4ba3e7065ef5",
+        "fromColumn": "releaseDateStreaming",
+        "fromTable": "rotten_tomatoes_movies",
+        "joinOnDateBehavior": "datePartOnly",
+        "toColumn": "Date",
+        "toTable": "LocalDateTable_bfaa340c-804f-40b1-8758-8588b71f13b3"
+      }
+    ],
+    "sourceQueryCulture": "en-US",
+    "tables": [
+      {
+        "name": "rotten_tomatoes_movies",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "columns": [
+          {
+            "name": "title",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "131a4176-6409-4c7b-aad5-3af9eee6fd70",
+            "sourceColumn": "title",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "audienceScore",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "__PBI_SemanticLinks",
+                "value": "[{\"LinkTarget\":{\"TableName\":\"rotten_tomatoes_movies\",\"TableItemName\":\"audienceScore (bins)\",\"ObjectType\":4},\"LinkType\":\"UsedInGroup\"}]"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "68263e26-dba0-461e-9f95-b65ffa732399",
+            "sourceColumn": "audienceScore",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "tomatoMeter",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "__PBI_SemanticLinks",
+                "value": "[{\"LinkTarget\":{\"TableName\":\"rotten_tomatoes_movies\",\"TableItemName\":\"tomatoMeter (bins)\",\"ObjectType\":4},\"LinkType\":\"UsedInGroup\"}]"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "4ab5c575-5ccb-4a1b-b483-9890f637bafe",
+            "sourceColumn": "tomatoMeter",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "rating",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "185cf127-82e7-48d2-86a3-88748dda288c",
+            "sourceColumn": "rating",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "releaseDateTheaters",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "UnderlyingDateTimeDataType",
+                "value": "Date"
+              }
+            ],
+            "dataType": "dateTime",
+            "formatString": "Long Date",
+            "lineageTag": "f2d80964-57d7-4bff-a429-73a71395e24a",
+            "sourceColumn": "releaseDateTheaters",
+            "summarizeBy": "none",
+            "variations": [
+              {
+                "name": "Variation",
+                "defaultHierarchy": {
+                  "hierarchy": "Date Hierarchy",
+                  "table": "LocalDateTable_87030d2e-2fa8-481f-9364-cf25f3ea712c"
+                },
+                "isDefault": true,
+                "relationship": "20eaf85c-3987-4b25-aa0e-c48e98091f2e"
+              }
+            ]
+          },
+          {
+            "name": "releaseDateStreaming",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "UnderlyingDateTimeDataType",
+                "value": "Date"
+              }
+            ],
+            "dataType": "dateTime",
+            "formatString": "Long Date",
+            "lineageTag": "6f75079e-7e19-4d72-b28b-399a06efab39",
+            "sourceColumn": "releaseDateStreaming",
+            "summarizeBy": "none",
+            "variations": [
+              {
+                "name": "Variation",
+                "defaultHierarchy": {
+                  "hierarchy": "Date Hierarchy",
+                  "table": "LocalDateTable_bfaa340c-804f-40b1-8758-8588b71f13b3"
+                },
+                "isDefault": true,
+                "relationship": "26ca0af6-ac95-4493-aebf-4ba3e7065ef5"
+              }
+            ]
+          },
+          {
+            "name": "runtimeMinutes",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "d0527b88-c9d3-44a3-b9ed-5f530a3b5d20",
+            "sourceColumn": "runtimeMinutes",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "genre",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "cc1a6676-c9d4-4282-b933-81e4604aab77",
+            "sourceColumn": "genre",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "subGenre",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "c8d2d42b-45d3-4882-a759-359f68fe2a2b",
+            "sourceColumn": "subGenre",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "originalLanguage",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "1282cab9-97de-47bb-8736-aa944cb5b025",
+            "sourceColumn": "originalLanguage",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "director",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "ee31b7ce-73cc-488c-b148-e493a398a968",
+            "sourceColumn": "director",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "writer",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "f5608070-edd3-4837-9ef0-dff7d3956a72",
+            "sourceColumn": "writer",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "boxOffice",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "09855afa-17fd-4aed-a539-5a3f774cee42",
+            "sourceColumn": "boxOffice",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "boxOffice-number",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"currencyCulture\":\"en-US\"}"
+              }
+            ],
+            "dataType": "decimal",
+            "formatString": "\\$#,0.###############;(\\$#,0.###############);\\$#,0.###############",
+            "lineageTag": "dd53b452-6999-4b36-9679-a1e9b35ec9cb",
+            "sourceColumn": "boxOffice-number",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "tomatoMeter (bins)",
+            "annotations": [
+              {
+                "name": "GroupingDesignState",
+                "value": "{\"Version\":0,\"Sources\":[{\"Name\":\"r\",\"Entity\":\"rotten_tomatoes_movies\"}],\"GroupedColumns\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"r\"}},\"Property\":\"tomatoMeter\"}}],\"BinItem\":{\"Expression\":{\"Member\":{\"Expression\":{\"Discretize\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"r\"}},\"Property\":\"tomatoMeter\"}},\"Count\":10}},\"Member\":\"Min\"}}}}"
+              },
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"isGeneralNumber\":true}"
+              }
+            ],
+            "dataType": "double",
+            "expression": [
+              "VAR __Count = 10",
+              "",
+              "VAR __Min = MIN('rotten_tomatoes_movies'[tomatoMeter])",
+              "",
+              "VAR __Max = MAX('rotten_tomatoes_movies'[tomatoMeter])",
+              "",
+              "VAR __Difference = (__Max - __Min)",
+              "",
+              "VAR __Size = IF(__Difference > 0, __Difference / __Count, 1)",
+              "",
+              "VAR __BinNumber = INT(('rotten_tomatoes_movies'[tomatoMeter] - __Min) / __Size)",
+              "",
+              "RETURN",
+              "\tIF(",
+              "\t\tISBLANK('rotten_tomatoes_movies'[tomatoMeter]),",
+              "\t\tBLANK(),",
+              "\t\t__Min + (MIN(__BinNumber, __Count - 1) * __Size)",
+              "\t)"
+            ],
+            "extendedProperties": [
+              {
+                "name": "GroupingMetadata",
+                "type": "json",
+                "value": {
+                  "groupedColumns": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "rotten_tomatoes_movies"
+                          }
+                        },
+                        "Property": "tomatoMeter"
+                      }
+                    }
+                  ],
+                  "version": 0
+                }
+              }
+            ],
+            "isDataTypeInferred": true,
+            "lineageTag": "a301feff-6dd7-4270-9a8b-c30450e43d93",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Tomato Rank",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "expression": [
+              "",
+              "IF (",
+              "    rotten_tomatoes_movies[tomatoMeter (bins)] > 40,",
+              "    \"Upper\",",
+              "    \"Lower\"",
+              ")",
+              ""
+            ],
+            "isDataTypeInferred": true,
+            "lineageTag": "c4cf3531-22ea-4d49-a965-693a50f12732",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "audienceScore (bins)",
+            "annotations": [
+              {
+                "name": "GroupingDesignState",
+                "value": "{\"Version\":0,\"Sources\":[{\"Name\":\"r\",\"Entity\":\"rotten_tomatoes_movies\"}],\"GroupedColumns\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"r\"}},\"Property\":\"audienceScore\"}}],\"BinItem\":{\"Expression\":{\"Member\":{\"Expression\":{\"Discretize\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"r\"}},\"Property\":\"audienceScore\"}},\"Count\":10}},\"Member\":\"Min\"}}}}"
+              },
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"isGeneralNumber\":true}"
+              }
+            ],
+            "dataType": "double",
+            "expression": [
+              "VAR __Count = 10",
+              "",
+              "VAR __Min = MIN('rotten_tomatoes_movies'[audienceScore])",
+              "",
+              "VAR __Max = MAX('rotten_tomatoes_movies'[audienceScore])",
+              "",
+              "VAR __Difference = (__Max - __Min)",
+              "",
+              "VAR __Size = IF(__Difference > 0, __Difference / __Count, 1)",
+              "",
+              "VAR __BinNumber = ",
+              "\tINT(('rotten_tomatoes_movies'[audienceScore] - __Min) / __Size)",
+              "",
+              "RETURN",
+              "\tIF(",
+              "\t\tISBLANK('rotten_tomatoes_movies'[audienceScore]),",
+              "\t\tBLANK(),",
+              "\t\t__Min + (MIN(__BinNumber, __Count - 1) * __Size)",
+              "\t)"
+            ],
+            "extendedProperties": [
+              {
+                "name": "GroupingMetadata",
+                "type": "json",
+                "value": {
+                  "groupedColumns": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "rotten_tomatoes_movies"
+                          }
+                        },
+                        "Property": "audienceScore"
+                      }
+                    }
+                  ],
+                  "version": 0
+                }
+              }
+            ],
+            "isDataTypeInferred": true,
+            "lineageTag": "a7819dd2-040c-4e6d-8511-9c5a376ae2d9",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Audience Rank",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "expression": [
+              "",
+              "IF (",
+              "    rotten_tomatoes_movies[audienceScore (bins)] > 40,",
+              "    \"Upper\",",
+              "    \"Lower\"",
+              ")",
+              ""
+            ],
+            "isDataTypeInferred": true,
+            "lineageTag": "76886611-d7ed-4244-94cf-a96e199cc10b",
+            "summarizeBy": "none",
+            "type": "calculated"
+          }
+        ],
+        "lineageTag": "ff3f9a77-ffe1-4edf-802a-06a89400dc0c",
+        "partitions": [
+          {
+            "name": "rotten_tomatoes_movies",
+            "mode": "import",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"D:\\HCMUS\\Data visualization\\rotten_tomatoes_movies.csv\"),[Delimiter=\",\", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\",{{\"title\", type text}, {\"audienceScore\", Int64.Type}, {\"tomatoMeter\", Int64.Type}, {\"rating\", type text}, {\"releaseDateTheaters\", type date}, {\"releaseDateStreaming\", type date}, {\"runtimeMinutes\", Int64.Type}, {\"genre\", type text}, {\"subGenre\", type text}, {\"originalLanguage\", type text}, {\"director\", type text}, {\"writer\", type text}, {\"boxOffice\", type text}, {\"boxOffice-number\", Currency.Type}})",
+                "in",
+                "    #\"Changed Type\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "DateTableTemplate_f978e370-4921-43e3-a68c-dd45e5b85312",
+        "annotations": [
+          {
+            "name": "__PBI_TemplateDateTable",
+            "value": "true"
+          },
+          {
+            "name": "DefaultItem",
+            "value": "DateHierarchy"
+          }
+        ],
+        "columns": [
+          {
+            "name": "Date",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              }
+            ],
+            "dataCategory": "PaddedDateTableDates",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "isNameInferred": true,
+            "lineageTag": "39ce6361-8f15-41ce-accc-09f57e43c18f",
+            "sourceColumn": "[Date]",
+            "summarizeBy": "none",
+            "type": "calculatedTableColumn"
+          },
+          {
+            "name": "Year",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Year"
+              }
+            ],
+            "dataCategory": "Years",
+            "dataType": "int64",
+            "expression": "YEAR([Date])",
+            "isHidden": true,
+            "lineageTag": "fad5eeaa-cce6-49ef-85b7-9d259480861c",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "MonthNo",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "MonthNumber"
+              }
+            ],
+            "dataCategory": "MonthOfYear",
+            "dataType": "int64",
+            "expression": "MONTH([Date])",
+            "isHidden": true,
+            "lineageTag": "b6326aad-d6d1-4f8e-92bb-38cb0ac6dec2",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Month",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Month"
+              }
+            ],
+            "dataCategory": "Months",
+            "dataType": "string",
+            "expression": "FORMAT([Date], \"MMMM\")",
+            "isHidden": true,
+            "lineageTag": "9fa73843-53c5-456b-ad8c-087ef18e2c31",
+            "sortByColumn": "MonthNo",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "QuarterNo",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "QuarterNumber"
+              }
+            ],
+            "dataCategory": "QuarterOfYear",
+            "dataType": "int64",
+            "expression": "INT(([MonthNo] + 2) / 3)",
+            "isHidden": true,
+            "lineageTag": "3b6a6edc-3a68-44a9-9352-bd213afdb835",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Quarter",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Quarter"
+              }
+            ],
+            "dataCategory": "Quarters",
+            "dataType": "string",
+            "expression": "\"Qtr \" & [QuarterNo]",
+            "isHidden": true,
+            "lineageTag": "8973b8fd-a0de-478b-b249-9872b819eaac",
+            "sortByColumn": "QuarterNo",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Day",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Day"
+              }
+            ],
+            "dataCategory": "DayOfMonth",
+            "dataType": "int64",
+            "expression": "DAY([Date])",
+            "isHidden": true,
+            "lineageTag": "95d91f2e-370e-4ca0-afdb-781a536ea232",
+            "summarizeBy": "none",
+            "type": "calculated"
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Date Hierarchy",
+            "annotations": [
+              {
+                "name": "TemplateId",
+                "value": "DateHierarchy"
+              }
+            ],
+            "levels": [
+              {
+                "name": "Year",
+                "column": "Year",
+                "lineageTag": "f964bb27-2567-4d83-a80e-cf248ba0f3bf",
+                "ordinal": 0
+              },
+              {
+                "name": "Quarter",
+                "column": "Quarter",
+                "lineageTag": "c4367c0e-1aec-463b-bbd3-91c5a1c9d90f",
+                "ordinal": 1
+              },
+              {
+                "name": "Month",
+                "column": "Month",
+                "lineageTag": "a4fbb064-dde0-4eab-9c6d-9ac6763303e6",
+                "ordinal": 2
+              },
+              {
+                "name": "Day",
+                "column": "Day",
+                "lineageTag": "8744ce8f-a51e-4bc0-8ba0-189513273958",
+                "ordinal": 3
+              }
+            ],
+            "lineageTag": "cad19b20-b0b6-44ec-a3b3-93534edf958c"
+          }
+        ],
+        "isHidden": true,
+        "isPrivate": true,
+        "lineageTag": "277a6512-f776-4661-a0a8-c4419b9b8b3a",
+        "partitions": [
+          {
+            "name": "DateTableTemplate_f978e370-4921-43e3-a68c-dd45e5b85312",
+            "mode": "import",
+            "source": {
+              "expression": "Calendar(Date(2015,1,1), Date(2015,1,1))",
+              "type": "calculated"
+            }
+          }
+        ]
+      },
+      {
+        "name": "LocalDateTable_87030d2e-2fa8-481f-9364-cf25f3ea712c",
+        "annotations": [
+          {
+            "name": "__PBI_LocalDateTable",
+            "value": "true"
+          }
+        ],
+        "columns": [
+          {
+            "name": "Date",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              }
+            ],
+            "dataCategory": "PaddedDateTableDates",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "isNameInferred": true,
+            "lineageTag": "c46ec657-1985-4607-99d9-ab4dfef8495d",
+            "sourceColumn": "[Date]",
+            "summarizeBy": "none",
+            "type": "calculatedTableColumn"
+          },
+          {
+            "name": "Year",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Year"
+              }
+            ],
+            "dataCategory": "Years",
+            "dataType": "int64",
+            "expression": "YEAR([Date])",
+            "isHidden": true,
+            "lineageTag": "d3e10159-11c0-45ef-be25-0b2f6786e4bb",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "MonthNo",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "MonthNumber"
+              }
+            ],
+            "dataCategory": "MonthOfYear",
+            "dataType": "int64",
+            "expression": "MONTH([Date])",
+            "isHidden": true,
+            "lineageTag": "dea18757-65ea-438e-88a7-6e2bde452882",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Month",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Month"
+              }
+            ],
+            "dataCategory": "Months",
+            "dataType": "string",
+            "expression": "FORMAT([Date], \"MMMM\")",
+            "isHidden": true,
+            "lineageTag": "87c40c22-7d65-465f-8325-00af984518de",
+            "sortByColumn": "MonthNo",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "QuarterNo",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "QuarterNumber"
+              }
+            ],
+            "dataCategory": "QuarterOfYear",
+            "dataType": "int64",
+            "expression": "INT(([MonthNo] + 2) / 3)",
+            "isHidden": true,
+            "lineageTag": "230cc75f-68ab-4236-b4b9-6bf3496fe5d1",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Quarter",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Quarter"
+              }
+            ],
+            "dataCategory": "Quarters",
+            "dataType": "string",
+            "expression": "\"Qtr \" & [QuarterNo]",
+            "isHidden": true,
+            "lineageTag": "b86a55bc-94e0-45f2-ad6f-05f2d1cee959",
+            "sortByColumn": "QuarterNo",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Day",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Day"
+              }
+            ],
+            "dataCategory": "DayOfMonth",
+            "dataType": "int64",
+            "expression": "DAY([Date])",
+            "isHidden": true,
+            "lineageTag": "a629bf75-5548-497d-aff9-a0bd52d79d75",
+            "summarizeBy": "none",
+            "type": "calculated"
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Date Hierarchy",
+            "annotations": [
+              {
+                "name": "TemplateId",
+                "value": "DateHierarchy"
+              }
+            ],
+            "levels": [
+              {
+                "name": "Year",
+                "column": "Year",
+                "lineageTag": "7bf5435f-a4e1-4b00-9838-34c1b4a06a17",
+                "ordinal": 0
+              },
+              {
+                "name": "Quarter",
+                "column": "Quarter",
+                "lineageTag": "ceedbac8-8895-4fd6-8cf1-76d551422666",
+                "ordinal": 1
+              },
+              {
+                "name": "Month",
+                "column": "Month",
+                "lineageTag": "e44bdfe2-195d-43e0-bce1-5075e05de020",
+                "ordinal": 2
+              },
+              {
+                "name": "Day",
+                "column": "Day",
+                "lineageTag": "7c9a37d5-3fe4-4685-b6c6-8c8a67fea8bb",
+                "ordinal": 3
+              }
+            ],
+            "lineageTag": "0fe59122-6d6f-42eb-b17b-eacbdc3ece05"
+          }
+        ],
+        "isHidden": true,
+        "lineageTag": "18e7261a-8da1-4c94-b03c-8a89228ccb13",
+        "partitions": [
+          {
+            "name": "LocalDateTable_87030d2e-2fa8-481f-9364-cf25f3ea712c",
+            "mode": "import",
+            "source": {
+              "expression": "Calendar(Date(Year(MIN('rotten_tomatoes_movies'[releaseDateTheaters])), 1, 1), Date(Year(MAX('rotten_tomatoes_movies'[releaseDateTheaters])), 12, 31))",
+              "type": "calculated"
+            }
+          }
+        ],
+        "showAsVariationsOnly": true
+      },
+      {
+        "name": "LocalDateTable_bfaa340c-804f-40b1-8758-8588b71f13b3",
+        "annotations": [
+          {
+            "name": "__PBI_LocalDateTable",
+            "value": "true"
+          }
+        ],
+        "columns": [
+          {
+            "name": "Date",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              }
+            ],
+            "dataCategory": "PaddedDateTableDates",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "isNameInferred": true,
+            "lineageTag": "f27d97d9-fc8a-49ee-9981-2eb0feb1b56e",
+            "sourceColumn": "[Date]",
+            "summarizeBy": "none",
+            "type": "calculatedTableColumn"
+          },
+          {
+            "name": "Year",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Year"
+              }
+            ],
+            "dataCategory": "Years",
+            "dataType": "int64",
+            "expression": "YEAR([Date])",
+            "isHidden": true,
+            "lineageTag": "95a0b329-027f-447e-8bb4-6a182ec50deb",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "MonthNo",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "MonthNumber"
+              }
+            ],
+            "dataCategory": "MonthOfYear",
+            "dataType": "int64",
+            "expression": "MONTH([Date])",
+            "isHidden": true,
+            "lineageTag": "d6a83e30-9e60-42f0-bfab-3b1040caf4a1",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Month",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Month"
+              }
+            ],
+            "dataCategory": "Months",
+            "dataType": "string",
+            "expression": "FORMAT([Date], \"MMMM\")",
+            "isHidden": true,
+            "lineageTag": "103a8fed-8133-46a3-a016-ea1977b1952d",
+            "sortByColumn": "MonthNo",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "QuarterNo",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "QuarterNumber"
+              }
+            ],
+            "dataCategory": "QuarterOfYear",
+            "dataType": "int64",
+            "expression": "INT(([MonthNo] + 2) / 3)",
+            "isHidden": true,
+            "lineageTag": "6692e631-47a2-4d66-b282-3489b24fb119",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Quarter",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Quarter"
+              }
+            ],
+            "dataCategory": "Quarters",
+            "dataType": "string",
+            "expression": "\"Qtr \" & [QuarterNo]",
+            "isHidden": true,
+            "lineageTag": "386d8d09-8e99-4d7e-95c7-a84bfdc2352d",
+            "sortByColumn": "QuarterNo",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Day",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "User"
+              },
+              {
+                "name": "TemplateId",
+                "value": "Day"
+              }
+            ],
+            "dataCategory": "DayOfMonth",
+            "dataType": "int64",
+            "expression": "DAY([Date])",
+            "isHidden": true,
+            "lineageTag": "1303941e-f404-46a2-b399-c84e499fc633",
+            "summarizeBy": "none",
+            "type": "calculated"
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Date Hierarchy",
+            "annotations": [
+              {
+                "name": "TemplateId",
+                "value": "DateHierarchy"
+              }
+            ],
+            "levels": [
+              {
+                "name": "Year",
+                "column": "Year",
+                "lineageTag": "7bd31fe0-a850-4a9d-9641-96a4368a160a",
+                "ordinal": 0
+              },
+              {
+                "name": "Quarter",
+                "column": "Quarter",
+                "lineageTag": "ce8f5cd1-78f4-41e2-9c00-cb6e28bd2f8c",
+                "ordinal": 1
+              },
+              {
+                "name": "Month",
+                "column": "Month",
+                "lineageTag": "cf5a21f6-9e37-48b2-ac34-784135f358d2",
+                "ordinal": 2
+              },
+              {
+                "name": "Day",
+                "column": "Day",
+                "lineageTag": "1556ccbe-2b5c-49dc-8785-87464baa1a18",
+                "ordinal": 3
+              }
+            ],
+            "lineageTag": "caa3c318-a120-4274-90c6-e5f0764d24f0"
+          }
+        ],
+        "isHidden": true,
+        "lineageTag": "9c0618b9-aebe-45b0-8976-6e6ab1bbfbd5",
+        "partitions": [
+          {
+            "name": "LocalDateTable_bfaa340c-804f-40b1-8758-8588b71f13b3",
+            "mode": "import",
+            "source": {
+              "expression": "Calendar(Date(Year(MIN('rotten_tomatoes_movies'[releaseDateStreaming])), 1, 1), Date(Year(MAX('rotten_tomatoes_movies'[releaseDateStreaming])), 12, 31))",
+              "type": "calculated"
+            }
+          }
+        ],
+        "showAsVariationsOnly": true
+      }
+    ]
+  }
+}
